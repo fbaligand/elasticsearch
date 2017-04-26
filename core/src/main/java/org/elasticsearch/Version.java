@@ -309,10 +309,12 @@ public class Version {
     public static final Version V_2_4_0 = new Version(V_2_4_0_ID, false, org.apache.lucene.util.Version.LUCENE_5_5_2);
     public static final int V_2_4_1_ID = 2040199;
     public static final Version V_2_4_1 = new Version(V_2_4_1_ID, false, org.apache.lucene.util.Version.LUCENE_5_5_2);
-    public static final int V_2_4_2_ID = 2040299;
-    public static final Version V_2_4_2 = new Version(V_2_4_2_ID, true, org.apache.lucene.util.Version.LUCENE_5_5_2);
+    public static final int V_2_4_2_ID = 2040200;
+    public static final Version V_2_4_2 = new Version(V_2_4_2_ID, false, org.apache.lucene.util.Version.LUCENE_5_5_2);
+    public static final int V_2_4_2_1_ID = 2040201;
+    public static final Version V_2_4_2_1 = new Version(V_2_4_2_1_ID, false, org.apache.lucene.util.Version.LUCENE_5_5_2);
 
-    public static final Version CURRENT = V_2_4_2;
+    public static final Version CURRENT = V_2_4_2_1;
 
     static {
         assert CURRENT.luceneVersion.equals(Lucene.VERSION) : "Version must be upgraded to [" + Lucene.VERSION + "] is still set to [" + CURRENT.luceneVersion + "]";
@@ -324,6 +326,8 @@ public class Version {
 
     public static Version fromId(int id) {
         switch (id) {
+            case V_2_4_2_1_ID:
+                return V_2_4_2_1;
             case V_2_4_2_ID:
                 return V_2_4_2;
             case V_2_4_1_ID:
@@ -639,18 +643,19 @@ public class Version {
             final int major = Integer.parseInt(parts[0]) * 1000000;
             final int minor = Integer.parseInt(parts[1]) * 10000;
             final int revision = Integer.parseInt(parts[2]) * 100;
+            final int build = Integer.parseInt(parts[3]);
 
 
-            int build = 99;
-            if (parts.length == 4) {
-                String buildStr = parts[3];
-                if (buildStr.startsWith("Beta") || buildStr.startsWith("beta")) {
-                    build = Integer.parseInt(buildStr.substring(4));
-                }
-                if (buildStr.startsWith("RC") || buildStr.startsWith("rc")) {
-                    build = Integer.parseInt(buildStr.substring(2)) + 50;
-                }
-            }
+//            int build = 99;
+//            if (parts.length == 4) {
+//                String buildStr = parts[3];
+//                if (buildStr.startsWith("Beta") || buildStr.startsWith("beta")) {
+//                    build = Integer.parseInt(buildStr.substring(4));
+//                }
+//                if (buildStr.startsWith("RC") || buildStr.startsWith("rc")) {
+//                    build = Integer.parseInt(buildStr.substring(2)) + 50;
+//                }
+//            }
 
             final Version versionFromId = fromId(major + minor + revision + build);
             if (snapshot != versionFromId.snapshot()) {
@@ -717,22 +722,23 @@ public class Version {
      */
     public String number() {
         StringBuilder sb = new StringBuilder();
-        sb.append(major).append('.').append(minor).append('.').append(revision);
-        if (isBeta()) {
-            if (major >= 2) {
-                sb.append("-beta");
-            } else {
-                sb.append(".Beta");
-            }
-            sb.append(build);
-        } else if (build < 99) {
-            if (major >= 2) {
-                sb.append("-rc");
-            } else {
-                sb.append(".RC");
-            }
-            sb.append(build - 50);
-        }
+        // Add hook here to release a patched version
+        sb.append(major).append('.').append(minor).append('.').append(revision).append('.').append(build);
+//        if (isBeta()) {
+//            if (major >= 2) {
+//                sb.append("-beta");
+//            } else {
+//                sb.append(".Beta");
+//            }
+//            sb.append(build);
+//        } else if (build < 99) {
+//            if (major >= 2) {
+//                sb.append("-rc");
+//            } else {
+//                sb.append(".RC");
+//            }
+//            sb.append(build - 50);
+//        }
         return sb.toString();
     }
 
